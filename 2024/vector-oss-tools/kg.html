@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "72f83909-9e7d-4401-9388-b8c537e40765", "label": "72f83909-9e7d-4401-9388-b8c537e40765", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "9cf9146d-2012-4f74-90d1-e057e8c5dd01", "label": "9cf9146d-2012-4f74-90d1-e057e8c5dd01", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "f0bf85c9-2983-494b-a4cc-a137faff6e3f", "label": "f0bf85c9-2983-494b-a4cc-a137faff6e3f", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2e93b11c-803d-4253-8a43-ecec83f5c59c", "label": "2e93b11c-803d-4253-8a43-ecec83f5c59c", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "f605e451-f040-4202-bf6b-bd7182eba7b2", "label": "f605e451-f040-4202-bf6b-bd7182eba7b2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6fb9258f-d766-451e-bb01-4c42df9b89a5", "label": "6fb9258f-d766-451e-bb01-4c42df9b89a5", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3ac564ca-032a-41b5-b516-9eaf0b075825", "label": "3ac564ca-032a-41b5-b516-9eaf0b075825", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a8b98578-5794-4854-8b2d-54f8fd2cb76a", "label": "a8b98578-5794-4854-8b2d-54f8fd2cb76a", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4fed6946-78e0-4fe3-8d11-c1ab4e680894", "label": "4fed6946-78e0-4fe3-8d11-c1ab4e680894", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6a5b9e6d-c1c8-4038-a3d8-318ae31c722e", "label": "6a5b9e6d-c1c8-4038-a3d8-318ae31c722e", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ea2b054c-d9af-43c2-9113-4850213ed0f2", "label": "ea2b054c-d9af-43c2-9113-4850213ed0f2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "d95e7bdc-d643-4a17-afa3-75172c6594b4", "label": "d95e7bdc-d643-4a17-afa3-75172c6594b4", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "44cca7f4-2edd-49b0-8c23-aa608d4c80a8", "label": "44cca7f4-2edd-49b0-8c23-aa608d4c80a8", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "aec60d84-eb87-4470-87da-b734cf262b2b", "label": "aec60d84-eb87-4470-87da-b734cf262b2b", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "c0ad6f7a-492e-413e-8588-152a6daf425a", "label": "c0ad6f7a-492e-413e-8588-152a6daf425a", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1f8081ba-724c-4ceb-ab17-daa204cb1489", "label": "1f8081ba-724c-4ceb-ab17-daa204cb1489", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "45db0a23-2750-4e49-8c3e-4933f0330910", "label": "45db0a23-2750-4e49-8c3e-4933f0330910", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "fec2e1aa-76ea-4e3c-b119-9184ee4c36bc", "label": "fec2e1aa-76ea-4e3c-b119-9184ee4c36bc", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6bf3ee8f-87a9-4eca-9657-ccb7efc4912c", "label": "6bf3ee8f-87a9-4eca-9657-ccb7efc4912c", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "bdc8fa09-b049-4cfc-b72b-6e7a7cf53267", "label": "bdc8fa09-b049-4cfc-b72b-6e7a7cf53267", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Barry perry", "label": "Barry perry", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Director", "label": "Director", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "David denison", "label": "David denison", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Board", "label": "Board", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kathleen taylor", "label": "Kathleen taylor", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Chair", "label": "Chair", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Her leadership", "label": "Her leadership", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Diverse and dynamic board", "label": "Diverse and dynamic board", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc", "label": "Rbc", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "One million employee volunteer hours", "label": "One million employee volunteer hours", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Us$5 million", "label": "Us$5 million", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc climate action institute", "label": "Rbc climate action institute", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Powering ideas", "label": "Powering ideas", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Employees", "label": "Employees", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc communities together fund", "label": "Rbc communities together fund", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Clients thrive", "label": "Clients thrive", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Revenue by segment", "label": "Revenue by segment", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Co-lead placement agent for svante technologies inc.\u0027s capital raise", "label": "Co-lead placement agent for svante technologies inc.\u0027s capital raise", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Total shareholder return", "label": "Total shareholder return", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mcgill university", "label": "Mcgill university", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Best workplaces in 2023", "label": "Best workplaces in 2023", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Communities prosper", "label": "Communities prosper", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Inclusive workplace culture", "label": "Inclusive workplace culture", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Official financial services partner of taylor swift | the eras tour", "label": "Official financial services partner of taylor swift | the eras tour", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Canada\u2019s top 100 employers", "label": "Canada\u2019s top 100 employers", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "It", "label": "It", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "$5 billion in communities", "label": "$5 billion in communities", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc\u2019s success", "label": "Rbc\u2019s success", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Contributing to conditions", "label": "Contributing to conditions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Understanding expectations of stakeholders", "label": "Understanding expectations of stakeholders", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Serving clients", "label": "Serving clients", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dave mckay", "label": "Dave mckay", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Leadership team", "label": "Leadership team", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bank\u2019s presence", "label": "Bank\u2019s presence", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Purposeful and sustainable", "label": "Purposeful and sustainable", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Royal bank of canada", "label": "Royal bank of canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Venture capital", "label": "Venture capital", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Financial performance metrics", "label": "Financial performance metrics", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Medium-term objectives", "label": "Medium-term objectives", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc foundation green skills scholarship", "label": "Rbc foundation green skills scholarship", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6th largest full-service wealth advisory firm in the u.s.", "label": "6th largest full-service wealth advisory firm in the u.s.", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "#1 canadian investment bank in the u.s.", "label": "#1 canadian investment bank in the u.s.", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "$48 million", "label": "$48 million", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "$140+ million", "label": "$140+ million", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "#1 in canada", "label": "#1 in canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "#1 in market share for high net worth/ultra high net worth in canada", "label": "#1 in market share for high net worth/ultra high net worth in canada", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2023", "label": "2023", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Largest retail mutual fund company in canada based on assets under management", "label": "Largest retail mutual fund company in canada based on assets under management", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Market-leading client franchises", "label": "Market-leading client franchises", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "9th largest global investment bank", "label": "9th largest global investment bank", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Annual report 2023", "label": "Annual report 2023", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Growth equity funds", "label": "Growth equity funds", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Climate innovation", "label": "Climate innovation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Canadian banks", "label": "Canadian banks", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "#1 or #2 market share in all key product categories across canadian banking", "label": "#1 or #2 market share in all key product categories across canadian banking", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2022", "label": "2022", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "One of the largest canadian bank-owned insurance organizations", "label": "One of the largest canadian bank-owned insurance organizations", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Houseful\u2122", "label": "Houseful\u2122", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Millions of canadians", "label": "Millions of canadians", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Avion rewards\u2122", "label": "Avion rewards\u2122", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "All eligible canadians", "label": "All eligible canadians", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nomi\u00ae forecast", "label": "Nomi\u00ae forecast", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Seven-day view into future cashflow", "label": "Seven-day view into future cashflow", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Best use of ai for customer experience", "label": "Best use of ai for customer experience", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "My money matters\u2122", "label": "My money matters\u2122", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Canadians navigate personal relationships with money", "label": "Canadians navigate personal relationships with money", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Women", "label": "Women", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "54% of promotions", "label": "54% of promotions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "43% of new executive appointments", "label": "43% of new executive appointments", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "49% of hires", "label": "49% of hires", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "50%", "label": "50%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bipoc", "label": "Bipoc", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "30%", "label": "30%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "45% of promotions", "label": "45% of promotions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "25% of new executive appointments", "label": "25% of new executive appointments", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "61% of hires", "label": "61% of hires", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Global employee base", "label": "Global employee base", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "18% young people", "label": "18% young people", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ideas", "label": "Ideas", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Positive impact", "label": "Positive impact", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc charity day for the kids", "label": "Rbc charity day for the kids", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "63 youth charities", "label": "63 youth charities", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Initiative", "label": "Initiative", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Us$30+ million", "label": "Us$30+ million", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Employee giving campaign", "label": "Employee giving campaign", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "$23.9 million", "label": "$23.9 million", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc future launch\u00ae", "label": "Rbc future launch\u00ae", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "$393+ million in support", "label": "$393+ million in support", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6.9+ million canadian youth", "label": "6.9+ million canadian youth", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc training ground", "label": "Rbc training ground", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Indigenous athletes", "label": "Indigenous athletes", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc employees", "label": "Rbc employees", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Pressing needs", "label": "Pressing needs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Fund", "label": "Fund", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "$1.3+ million in grants", "label": "$1.3+ million in grants", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "880+ volunteer projects", "label": "880+ volunteer projects", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rbc race for the kids", "label": "Rbc race for the kids", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "$10.7+ million", "label": "$10.7+ million", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Economists", "label": "Economists", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Climate smart buildings alliance", "label": "Climate smart buildings alliance", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Business strategists", "label": "Business strategists", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Policy analysts", "label": "Policy analysts", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sectoral challenges", "label": "Sectoral challenges", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Barriers to decarbonization", "label": "Barriers to decarbonization", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Canadian alliance for net-zero agri-food", "label": "Canadian alliance for net-zero agri-food", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National biodigester network initiative", "label": "National biodigester network initiative", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Carbon farming initiative", "label": "Carbon farming initiative", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Supporting students\u2019 green skills education", "label": "Supporting students\u2019 green skills education", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Diluted eps growth of 7%+", "label": "Diluted eps growth of 7%+", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Strong capital ratio (cet1", "label": "Strong capital ratio (cet1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Roe of 16%+", "label": "Roe of 16%+", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Dividend payout ratio of 40%-50%", "label": "Dividend payout ratio of 40%-50%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Wealth management $5.7 billion", "label": "Wealth management $5.7 billion", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "72f83909-9e7d-4401-9388-b8c537e40765", "label": "SOURCE", "to": "9cf9146d-2012-4f74-90d1-e057e8c5dd01", "width": 1}, {"arrows": "to", "from": "f0bf85c9-2983-494b-a4cc-a137faff6e3f", "label": "SOURCE", "to": "2e93b11c-803d-4253-8a43-ecec83f5c59c", "width": 1}, {"arrows": "to", "from": "f605e451-f040-4202-bf6b-bd7182eba7b2", "label": "SOURCE", "to": "6fb9258f-d766-451e-bb01-4c42df9b89a5", "width": 1}, {"arrows": "to", "from": "3ac564ca-032a-41b5-b516-9eaf0b075825", "label": "SOURCE", "to": "a8b98578-5794-4854-8b2d-54f8fd2cb76a", "width": 1}, {"arrows": "to", "from": "4fed6946-78e0-4fe3-8d11-c1ab4e680894", "label": "SOURCE", "to": "6a5b9e6d-c1c8-4038-a3d8-318ae31c722e", "width": 1}, {"arrows": "to", "from": "ea2b054c-d9af-43c2-9113-4850213ed0f2", "label": "SOURCE", "to": "d95e7bdc-d643-4a17-afa3-75172c6594b4", "width": 1}, {"arrows": "to", "from": "44cca7f4-2edd-49b0-8c23-aa608d4c80a8", "label": "SOURCE", "to": "aec60d84-eb87-4470-87da-b734cf262b2b", "width": 1}, {"arrows": "to", "from": "c0ad6f7a-492e-413e-8588-152a6daf425a", "label": "SOURCE", "to": "1f8081ba-724c-4ceb-ab17-daa204cb1489", "width": 1}, {"arrows": "to", "from": "45db0a23-2750-4e49-8c3e-4933f0330910", "label": "SOURCE", "to": "fec2e1aa-76ea-4e3c-b119-9184ee4c36bc", "width": 1}, {"arrows": "to", "from": "6bf3ee8f-87a9-4eca-9657-ccb7efc4912c", "label": "SOURCE", "to": "bdc8fa09-b049-4cfc-b72b-6e7a7cf53267", "width": 1}, {"arrows": "to", "from": "Barry perry", "label": "Appointment of", "to": "Director", "width": 1}, {"arrows": "to", "from": "David denison", "label": "Served", "to": "Board", "width": 1}, {"arrows": "to", "from": "Kathleen taylor", "label": "Succeeded by", "to": "Chair", "width": 1}, {"arrows": "to", "from": "Her leadership", "label": "Helped create", "to": "Diverse and dynamic board", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Tracked", "to": "One million employee volunteer hours", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Donated", "to": "Us$5 million", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Launched", "to": "Rbc climate action institute", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Is committed to", "to": "Powering ideas", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Supports", "to": "Employees", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Launched", "to": "Rbc communities together fund", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Helps", "to": "Clients thrive", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Has", "to": "Revenue by segment", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Acted as", "to": "Co-lead placement agent for svante technologies inc.\u0027s capital raise", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Has", "to": "Total shareholder return", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Collaborated with", "to": "Mcgill university", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Recognized as", "to": "Best workplaces in 2023", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Helps", "to": "Communities prosper", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Committed to", "to": "Inclusive workplace culture", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Is", "to": "Official financial services partner of taylor swift | the eras tour", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Recognized as", "to": "Canada\u2019s top 100 employers", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Is better for", "to": "It", "width": 1}, {"arrows": "to", "from": "Rbc", "label": "Supported", "to": "$5 billion in communities", "width": 1}, {"arrows": "to", "from": "Rbc\u2019s success", "label": "Linked to", "to": "Contributing to conditions", "width": 1}, {"arrows": "to", "from": "Rbc\u2019s success", "label": "Linked to", "to": "Understanding expectations of stakeholders", "width": 1}, {"arrows": "to", "from": "Rbc\u2019s success", "label": "Linked to", "to": "Serving clients", "width": 1}, {"arrows": "to", "from": "Dave mckay", "label": "Leads", "to": "Leadership team", "width": 1}, {"arrows": "to", "from": "Bank\u2019s presence", "label": "Will be", "to": "Purposeful and sustainable", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Committed toward", "to": "Venture capital", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Has", "to": "Financial performance metrics", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Has", "to": "Medium-term objectives", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Launched", "to": "Rbc foundation green skills scholarship", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Is", "to": "6th largest full-service wealth advisory firm in the u.s.", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Is", "to": "#1 canadian investment bank in the u.s.", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Committed", "to": "$48 million", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Total funding", "to": "$140+ million", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Is", "to": "#1 in canada", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Is", "to": "#1 in market share for high net worth/ultra high net worth in canada", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Committed in", "to": "2023", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Is", "to": "Largest retail mutual fund company in canada based on assets under management", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Has", "to": "Market-leading client franchises", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Is", "to": "9th largest global investment bank", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Published", "to": "Annual report 2023", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Committed toward", "to": "Growth equity funds", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Support", "to": "Climate innovation", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Ranked 1st among", "to": "Canadian banks", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Has", "to": "#1 or #2 market share in all key product categories across canadian banking", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Total funding since", "to": "2022", "width": 1}, {"arrows": "to", "from": "Royal bank of canada", "label": "Is", "to": "One of the largest canadian bank-owned insurance organizations", "width": 1}, {"arrows": "to", "from": "Houseful\u2122", "label": "Supporting", "to": "Millions of canadians", "width": 1}, {"arrows": "to", "from": "Avion rewards\u2122", "label": "Expanded access to", "to": "All eligible canadians", "width": 1}, {"arrows": "to", "from": "Nomi\u00ae forecast", "label": "Provides", "to": "Seven-day view into future cashflow", "width": 1}, {"arrows": "to", "from": "Nomi\u00ae forecast", "label": "Recognized for", "to": "Best use of ai for customer experience", "width": 1}, {"arrows": "to", "from": "My money matters\u2122", "label": "Helping", "to": "Canadians navigate personal relationships with money", "width": 1}, {"arrows": "to", "from": "Women", "label": "Represented", "to": "54% of promotions", "width": 1}, {"arrows": "to", "from": "Women", "label": "Represented", "to": "43% of new executive appointments", "width": 1}, {"arrows": "to", "from": "Women", "label": "Represented", "to": "49% of hires", "width": 1}, {"arrows": "to", "from": "Women", "label": "Goal", "to": "50%", "width": 1}, {"arrows": "to", "from": "Bipoc", "label": "Goal", "to": "30%", "width": 1}, {"arrows": "to", "from": "Bipoc", "label": "Represented", "to": "45% of promotions", "width": 1}, {"arrows": "to", "from": "Bipoc", "label": "Represented", "to": "25% of new executive appointments", "width": 1}, {"arrows": "to", "from": "Bipoc", "label": "Represented", "to": "61% of hires", "width": 1}, {"arrows": "to", "from": "Global employee base", "label": "Comprised of", "to": "18% young people", "width": 1}, {"arrows": "to", "from": "Ideas", "label": "Drive", "to": "Positive impact", "width": 1}, {"arrows": "to", "from": "Rbc charity day for the kids", "label": "Donated to", "to": "63 youth charities", "width": 1}, {"arrows": "to", "from": "Initiative", "label": "Raised", "to": "Us$30+ million", "width": 1}, {"arrows": "to", "from": "Employee giving campaign", "label": "Raised", "to": "$23.9 million", "width": 1}, {"arrows": "to", "from": "Rbc future launch\u00ae", "label": "Provided", "to": "$393+ million in support", "width": 1}, {"arrows": "to", "from": "Rbc future launch\u00ae", "label": "Reached", "to": "6.9+ million canadian youth", "width": 1}, {"arrows": "to", "from": "Rbc training ground", "label": "Hosted events for", "to": "Indigenous athletes", "width": 1}, {"arrows": "to", "from": "Rbc employees", "label": "Help address", "to": "Pressing needs", "width": 1}, {"arrows": "to", "from": "Fund", "label": "Mobilized", "to": "$1.3+ million in grants", "width": 1}, {"arrows": "to", "from": "Fund", "label": "Supported", "to": "880+ volunteer projects", "width": 1}, {"arrows": "to", "from": "Rbc race for the kids", "label": "Raised", "to": "$10.7+ million", "width": 1}, {"arrows": "to", "from": "Rbc climate action institute", "label": "Bring together", "to": "Economists", "width": 1}, {"arrows": "to", "from": "Rbc climate action institute", "label": "Launched", "to": "Climate smart buildings alliance", "width": 1}, {"arrows": "to", "from": "Rbc climate action institute", "label": "Bring together", "to": "Business strategists", "width": 1}, {"arrows": "to", "from": "Rbc climate action institute", "label": "Bring together", "to": "Policy analysts", "width": 1}, {"arrows": "to", "from": "Climate smart buildings alliance", "label": "Identify", "to": "Sectoral challenges", "width": 1}, {"arrows": "to", "from": "Climate smart buildings alliance", "label": "Address", "to": "Barriers to decarbonization", "width": 1}, {"arrows": "to", "from": "Canadian alliance for net-zero agri-food", "label": "Launched", "to": "National biodigester network initiative", "width": 1}, {"arrows": "to", "from": "Canadian alliance for net-zero agri-food", "label": "Launched", "to": "Carbon farming initiative", "width": 1}, {"arrows": "to", "from": "Rbc foundation green skills scholarship", "label": "Focused on", "to": "Supporting students\u2019 green skills education", "width": 1}, {"arrows": "to", "from": "Medium-term objectives", "label": "Include", "to": "Diluted eps growth of 7%+", "width": 1}, {"arrows": "to", "from": "Medium-term objectives", "label": "Include", "to": "Strong capital ratio (cet1", "width": 1}, {"arrows": "to", "from": "Medium-term objectives", "label": "Include", "to": "Roe of 16%+", "width": 1}, {"arrows": "to", "from": "Medium-term objectives", "label": "Include", "to": "Dividend payout ratio of 40%-50%", "width": 1}, {"arrows": "to", "from": "Revenue by segment", "label": "Includes", "to": "Wealth management $5.7 billion", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

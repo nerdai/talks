@@ -1,0 +1,7 @@
+data/
+networks_data/
+vector_data/
+.ipynb_checkpoints/
+.env
+client-env-files/
+lib/
