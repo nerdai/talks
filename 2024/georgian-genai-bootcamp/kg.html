@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "6581c408-e3dd-43a9-90e8-d11d6c5f4639", "label": "6581c408-e3dd-43a9-90e8-d11d6c5f4639", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "c9219cd4-b463-43e8-a78f-37a8d2fbe5c7", "label": "c9219cd4-b463-43e8-a78f-37a8d2fbe5c7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "223cace4-a409-42b3-8fe9-0a1b9fead746", "label": "223cace4-a409-42b3-8fe9-0a1b9fead746", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ecbb1820-9fe5-4ace-9379-ad9fcfcd0dd7", "label": "ecbb1820-9fe5-4ace-9379-ad9fcfcd0dd7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "0f713f1e-c31a-44da-b4a3-51d6bf6809a6", "label": "0f713f1e-c31a-44da-b4a3-51d6bf6809a6", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "d803030d-4c90-4610-8f8b-c0d063096301", "label": "d803030d-4c90-4610-8f8b-c0d063096301", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "f13c7b95-9b84-45d6-a4c5-24a531d741da", "label": "f13c7b95-9b84-45d6-a4c5-24a531d741da", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "21df5bfd-d491-4027-9e43-d160cb630b6d", "label": "21df5bfd-d491-4027-9e43-d160cb630b6d", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "64c8058c-48ca-4c76-8dd9-8b88d69706bd", "label": "64c8058c-48ca-4c76-8dd9-8b88d69706bd", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "57bba618-9841-45a8-9c3a-5378beb60f00", "label": "57bba618-9841-45a8-9c3a-5378beb60f00", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6afbd64c-4d20-4d55-bc00-af3e64891eca", "label": "6afbd64c-4d20-4d55-bc00-af3e64891eca", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "341600c5-ef6b-4d90-8924-1ae53c3ad47d", "label": "341600c5-ef6b-4d90-8924-1ae53c3ad47d", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "a8cabccd-b2aa-4941-ad83-9055866c274f", "label": "a8cabccd-b2aa-4941-ad83-9055866c274f", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "93f2bb82-8307-4a0e-95f5-bc699f58b716", "label": "93f2bb82-8307-4a0e-95f5-bc699f58b716", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "0a1790b7-b246-407e-b11c-d259719bc439", "label": "0a1790b7-b246-407e-b11c-d259719bc439", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "839a5dfc-59cf-4913-98ad-31c81b55d7af", "label": "839a5dfc-59cf-4913-98ad-31c81b55d7af", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "9e022304-387f-49fe-82f5-a8d1da6bdf3a", "label": "9e022304-387f-49fe-82f5-a8d1da6bdf3a", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "f27401f7-eb54-4da1-b932-b2c6b2cf1739", "label": "f27401f7-eb54-4da1-b932-b2c6b2cf1739", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "c682f013-ce97-4a5f-b156-539ec0c041a7", "label": "c682f013-ce97-4a5f-b156-539ec0c041a7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "7250f7c1-d6aa-4413-8541-a71a1a282440", "label": "7250f7c1-d6aa-4413-8541-a71a1a282440", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Georgian", "label": "Georgian", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ai", "label": "Ai", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Core strengths", "label": "Core strengths", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Esg survey", "label": "Esg survey", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Diversity inclusion belonging equity practices", "label": "Diversity inclusion belonging equity practices", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "First assessment", "label": "First assessment", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Member of edci", "label": "Member of edci", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Current talent pool", "label": "Current talent pool", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Signatory of unpri", "label": "Signatory of unpri", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Active board seat", "label": "Active board seat", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Great place to work\u2019s list", "label": "Great place to work\u2019s list", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "New competencies", "label": "New competencies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Recognitions from gptw", "label": "Recognitions from gptw", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Voluntary self-identification survey", "label": "Voluntary self-identification survey", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Esg program", "label": "Esg program", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Self-disclosed data", "label": "Self-disclosed data", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Questionnaire", "label": "Questionnaire", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Data", "label": "Data", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Frameworks", "label": "Frameworks", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Self-reporting", "label": "Self-reporting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "39 georgian portfolio companies", "label": "39 georgian portfolio companies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tracking and reporting", "label": "Tracking and reporting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Standards and regulations", "label": "Standards and regulations", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Survey participation", "label": "Survey participation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Past three surveys", "label": "Past three surveys", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2022 survey cycle", "label": "2022 survey cycle", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "95% participation", "label": "95% participation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Philz", "label": "Philz", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Coffee shop", "label": "Coffee shop", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "1982", "label": "1982", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Berkeley", "label": "Berkeley", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "We", "label": "We", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Portfolio benchmarks", "label": "Portfolio benchmarks", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Collaboration methodology", "label": "Collaboration methodology", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Areas of progress", "label": "Areas of progress", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Areas of opportunity", "label": "Areas of opportunity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Companies", "label": "Companies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Progress on esg issues", "label": "Progress on esg issues", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2003", "label": "2003", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity programs", "label": "Cybersecurity programs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Executive talent", "label": "Executive talent", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Study", "label": "Study", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "667 companies", "label": "667 companies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Technology database", "label": "Technology database", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Georgian customers", "label": "Georgian customers", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "~50% of new hires from underrepresented talent populations", "label": "~50% of new hires from underrepresented talent populations", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Mental health support", "label": "Mental health support", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Board-level esg reporting", "label": "Board-level esg reporting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Disability support", "label": "Disability support", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Employee well-being top priority", "label": "Employee well-being top priority", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Prioritizing work flexibility", "label": "Prioritizing work flexibility", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Employee mentorship", "label": "Employee mentorship", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "78.3%", "label": "78.3%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Enps surveys", "label": "Enps surveys", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Formal initiatives", "label": "Formal initiatives", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Programs", "label": "Programs", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Paid time off for employee volunteering", "label": "Paid time off for employee volunteering", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Do not estimate carbon emissions", "label": "Do not estimate carbon emissions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Elements of a similar program", "label": "Elements of a similar program", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "32%", "label": "32%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Women", "label": "Women", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "17%", "label": "17%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Racially-visible background", "label": "Racially-visible background", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "92%", "label": "92%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Fully remotely or hybrid", "label": "Fully remotely or hybrid", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Employee belonging", "label": "Employee belonging", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Productivity", "label": "Productivity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Retention", "label": "Retention", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Oversight of risk", "label": "Oversight of risk", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Opportunities for value creation", "label": "Opportunities for value creation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "14% of georgian customers", "label": "14% of georgian customers", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Planned energy efficiency initiatives", "label": "Planned energy efficiency initiatives", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Energy efficiency initiatives", "label": "Energy efficiency initiatives", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tracking consumption", "label": "Tracking consumption", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sourcing renewable energy sources", "label": "Sourcing renewable energy sources", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Addressing esg topics", "label": "Addressing esg topics", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Operational capacity", "label": "Operational capacity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Strategic oversight", "label": "Strategic oversight", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "The collective", "label": "The collective", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Interested companies together", "label": "Interested companies together", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Learnings and assets", "label": "Learnings and assets", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Broadly available", "label": "Broadly available", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Addressing cyber risk", "label": "Addressing cyber risk", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Priority", "label": "Priority", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Security leaders", "label": "Security leaders", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Publish recommendations", "label": "Publish recommendations", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Identify recommendations", "label": "Identify recommendations", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bring recommendations to life", "label": "Bring recommendations to life", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Proactive oversight", "label": "Proactive oversight", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Key component", "label": "Key component", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Collective group", "label": "Collective group", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Launch cybersecurity initiative for board reporting", "label": "Launch cybersecurity initiative for board reporting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cybersecurity initiative for board reporting", "label": "Cybersecurity initiative for board reporting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Helping companies", "label": "Helping companies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Page_label", "label": "Page_label", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "17", "label": "17", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "File_path", "label": "File_path", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "/users/nerdai/talks/2024/georgian-genai-bootcamp/data/gp-purpose-report-2022.pdf", "label": "/users/nerdai/talks/2024/georgian-genai-bootcamp/data/gp-purpose-report-2022.pdf", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Higher purpose annual report", "label": "Higher purpose annual report", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Purpose annual report", "label": "Purpose annual report", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "2022", "label": "2022", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Enhancing", "label": "Enhancing", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Our esg practices", "label": "Our esg practices", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Section", "label": "Section", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "4", "label": "4", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Unpri", "label": "Unpri", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Robust framework", "label": "Robust framework", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Edci", "label": "Edci", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Consistent reporting", "label": "Consistent reporting", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "38.9%", "label": "38.9%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6.6%", "label": "6.6%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ethnicity", "label": "Ethnicity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "34.3%", "label": "34.3%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bipoc", "label": "Bipoc", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "15.2%", "label": "15.2%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bipoc women", "label": "Bipoc women", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "17.1%", "label": "17.1%", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bipoc men", "label": "Bipoc men", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "30", "label": "30", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "I", "label": "I", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Head of ai", "label": "Head of ai", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ai scientist", "label": "Ai scientist", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Director of machine learning", "label": "Director of machine learning", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Team of ai scientists and engineers", "label": "Team of ai scientists and engineers", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Team", "label": "Team", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Helping customers use ai", "label": "Helping customers use ai", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "6581c408-e3dd-43a9-90e8-d11d6c5f4639", "label": "SOURCE", "to": "c9219cd4-b463-43e8-a78f-37a8d2fbe5c7", "width": 1}, {"arrows": "to", "from": "223cace4-a409-42b3-8fe9-0a1b9fead746", "label": "SOURCE", "to": "ecbb1820-9fe5-4ace-9379-ad9fcfcd0dd7", "width": 1}, {"arrows": "to", "from": "0f713f1e-c31a-44da-b4a3-51d6bf6809a6", "label": "SOURCE", "to": "d803030d-4c90-4610-8f8b-c0d063096301", "width": 1}, {"arrows": "to", "from": "f13c7b95-9b84-45d6-a4c5-24a531d741da", "label": "SOURCE", "to": "21df5bfd-d491-4027-9e43-d160cb630b6d", "width": 1}, {"arrows": "to", "from": "64c8058c-48ca-4c76-8dd9-8b88d69706bd", "label": "SOURCE", "to": "57bba618-9841-45a8-9c3a-5378beb60f00", "width": 1}, {"arrows": "to", "from": "6afbd64c-4d20-4d55-bc00-af3e64891eca", "label": "SOURCE", "to": "341600c5-ef6b-4d90-8924-1ae53c3ad47d", "width": 1}, {"arrows": "to", "from": "a8cabccd-b2aa-4941-ad83-9055866c274f", "label": "SOURCE", "to": "93f2bb82-8307-4a0e-95f5-bc699f58b716", "width": 1}, {"arrows": "to", "from": "0a1790b7-b246-407e-b11c-d259719bc439", "label": "SOURCE", "to": "839a5dfc-59cf-4913-98ad-31c81b55d7af", "width": 1}, {"arrows": "to", "from": "9e022304-387f-49fe-82f5-a8d1da6bdf3a", "label": "SOURCE", "to": "f27401f7-eb54-4da1-b932-b2c6b2cf1739", "width": 1}, {"arrows": "to", "from": "c682f013-ce97-4a5f-b156-539ec0c041a7", "label": "SOURCE", "to": "7250f7c1-d6aa-4413-8541-a71a1a282440", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Had surge of interest in", "to": "Ai", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Expanding on", "to": "Core strengths", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Launched", "to": "Esg survey", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Invests in", "to": "Diversity inclusion belonging equity practices", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Preparing for", "to": "First assessment", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Is", "to": "Member of edci", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Has", "to": "Current talent pool", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Is", "to": "Signatory of unpri", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Held", "to": "Active board seat", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Recognized in", "to": "Great place to work\u2019s list", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Developing", "to": "New competencies", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Received", "to": "Recognitions from gptw", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Has", "to": "Voluntary self-identification survey", "width": 1}, {"arrows": "to", "from": "Georgian", "label": "Continued to make advancements in", "to": "Esg program", "width": 1}, {"arrows": "to", "from": "Esg survey", "label": "Based on", "to": "Self-disclosed data", "width": 1}, {"arrows": "to", "from": "Questionnaire", "label": "Collects", "to": "Data", "width": 1}, {"arrows": "to", "from": "Data", "label": "Based on", "to": "Frameworks", "width": 1}, {"arrows": "to", "from": "Data", "label": "Based on", "to": "Self-reporting", "width": 1}, {"arrows": "to", "from": "Data", "label": "Self-disclosed by", "to": "39 georgian portfolio companies", "width": 1}, {"arrows": "to", "from": "Tracking and reporting", "label": "Up-to-date with", "to": "Standards and regulations", "width": 1}, {"arrows": "to", "from": "Survey participation", "label": "Increased", "to": "Past three surveys", "width": 1}, {"arrows": "to", "from": "2022 survey cycle", "label": "Had", "to": "95% participation", "width": 1}, {"arrows": "to", "from": "Philz", "label": "Is", "to": "Coffee shop", "width": 1}, {"arrows": "to", "from": "Philz", "label": "Founded in", "to": "1982", "width": 1}, {"arrows": "to", "from": "Philz", "label": "Founded in", "to": "Berkeley", "width": 1}, {"arrows": "to", "from": "We", "label": "Establish", "to": "Portfolio benchmarks", "width": 1}, {"arrows": "to", "from": "We", "label": "Developed", "to": "Collaboration methodology", "width": 1}, {"arrows": "to", "from": "We", "label": "Identify", "to": "Areas of progress", "width": 1}, {"arrows": "to", "from": "We", "label": "Identify", "to": "Areas of opportunity", "width": 1}, {"arrows": "to", "from": "Companies", "label": "Making", "to": "Progress on esg issues", "width": 1}, {"arrows": "to", "from": "Companies", "label": "Founded since", "to": "2003", "width": 1}, {"arrows": "to", "from": "Companies", "label": "Unlock investment", "to": "Cybersecurity programs", "width": 1}, {"arrows": "to", "from": "Companies", "label": "Hiring", "to": "Executive talent", "width": 1}, {"arrows": "to", "from": "Study", "label": "Analyze", "to": "667 companies", "width": 1}, {"arrows": "to", "from": "Study", "label": "Uses", "to": "Technology database", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Reported", "to": "~50% of new hires from underrepresented talent populations", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Offering", "to": "Mental health support", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Adopt", "to": "Ai", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Indicated", "to": "Board-level esg reporting", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Offering", "to": "Disability support", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Reported", "to": "Employee well-being top priority", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Reported", "to": "Prioritizing work flexibility", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Reported offering", "to": "Employee mentorship", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Median enps score", "to": "78.3%", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Using", "to": "Enps surveys", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Report implementing", "to": "Formal initiatives", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Reported offering", "to": "Programs", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Reported", "to": "Paid time off for employee volunteering", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Reported", "to": "Do not estimate carbon emissions", "width": 1}, {"arrows": "to", "from": "Georgian customers", "label": "Reported offering", "to": "Elements of a similar program", "width": 1}, {"arrows": "to", "from": "32%", "label": "Identifying as", "to": "Women", "width": 1}, {"arrows": "to", "from": "17%", "label": "Identifying as", "to": "Racially-visible background", "width": 1}, {"arrows": "to", "from": "92%", "label": "Working", "to": "Fully remotely or hybrid", "width": 1}, {"arrows": "to", "from": "Employee belonging", "label": "Linked to", "to": "Productivity", "width": 1}, {"arrows": "to", "from": "Employee belonging", "label": "Linked to", "to": "Retention", "width": 1}, {"arrows": "to", "from": "Board-level esg reporting", "label": "Supports", "to": "Oversight of risk", "width": 1}, {"arrows": "to", "from": "Board-level esg reporting", "label": "Supports", "to": "Opportunities for value creation", "width": 1}, {"arrows": "to", "from": "14% of georgian customers", "label": "Reported", "to": "Planned energy efficiency initiatives", "width": 1}, {"arrows": "to", "from": "Energy efficiency initiatives", "label": "Include", "to": "Tracking consumption", "width": 1}, {"arrows": "to", "from": "Energy efficiency initiatives", "label": "Include", "to": "Sourcing renewable energy sources", "width": 1}, {"arrows": "to", "from": "Addressing esg topics", "label": "Requires", "to": "Operational capacity", "width": 1}, {"arrows": "to", "from": "Addressing esg topics", "label": "Requires", "to": "Strategic oversight", "width": 1}, {"arrows": "to", "from": "Collaboration methodology", "label": "Known as", "to": "The collective", "width": 1}, {"arrows": "to", "from": "The collective", "label": "Brings", "to": "Interested companies together", "width": 1}, {"arrows": "to", "from": "Learnings and assets", "label": "Made", "to": "Broadly available", "width": 1}, {"arrows": "to", "from": "Addressing cyber risk", "label": "Identified as", "to": "Priority", "width": 1}, {"arrows": "to", "from": "Security leaders", "label": "Joined forces", "to": "Publish recommendations", "width": 1}, {"arrows": "to", "from": "Security leaders", "label": "Joined forces", "to": "Identify recommendations", "width": 1}, {"arrows": "to", "from": "Security leaders", "label": "Collaborated", "to": "Bring recommendations to life", "width": 1}, {"arrows": "to", "from": "Security leaders", "label": "Flagged", "to": "Proactive oversight", "width": 1}, {"arrows": "to", "from": "Proactive oversight", "label": "Is", "to": "Key component", "width": 1}, {"arrows": "to", "from": "Collective group", "label": "Came together", "to": "Launch cybersecurity initiative for board reporting", "width": 1}, {"arrows": "to", "from": "Cybersecurity initiative for board reporting", "label": "Focused on", "to": "Helping companies", "width": 1}, {"arrows": "to", "from": "Page_label", "label": "Is", "to": "17", "width": 1}, {"arrows": "to", "from": "File_path", "label": "Is", "to": "/users/nerdai/talks/2024/georgian-genai-bootcamp/data/gp-purpose-report-2022.pdf", "width": 1}, {"arrows": "to", "from": "Higher purpose annual report", "label": "Is", "to": "17", "width": 1}, {"arrows": "to", "from": "Purpose annual report", "label": "Is", "to": "2022", "width": 1}, {"arrows": "to", "from": "Enhancing", "label": "Is", "to": "Our esg practices", "width": 1}, {"arrows": "to", "from": "Section", "label": "Is", "to": "4", "width": 1}, {"arrows": "to", "from": "Unpri", "label": "Offers", "to": "Robust framework", "width": 1}, {"arrows": "to", "from": "Edci", "label": "Aims to foster", "to": "Consistent reporting", "width": 1}, {"arrows": "to", "from": "38.9%", "label": "Self-identified as", "to": "Women", "width": 1}, {"arrows": "to", "from": "6.6%", "label": "Chose not to disclose", "to": "Ethnicity", "width": 1}, {"arrows": "to", "from": "34.3%", "label": "Self-identified as", "to": "Bipoc", "width": 1}, {"arrows": "to", "from": "15.2%", "label": "Self-identified as", "to": "Bipoc women", "width": 1}, {"arrows": "to", "from": "17.1%", "label": "Self-identified as", "to": "Bipoc men", "width": 1}, {"arrows": "to", "from": "30", "label": "Languages spoken at", "to": "Georgian", "width": 1}, {"arrows": "to", "from": "I", "label": "Progressed to", "to": "Head of ai", "width": 1}, {"arrows": "to", "from": "I", "label": "Progressed from", "to": "Ai scientist", "width": 1}, {"arrows": "to", "from": "I", "label": "Progressed to", "to": "Director of machine learning", "width": 1}, {"arrows": "to", "from": "I", "label": "Lead", "to": "Team of ai scientists and engineers", "width": 1}, {"arrows": "to", "from": "Team", "label": "Dedicated to", "to": "Helping customers use ai", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
